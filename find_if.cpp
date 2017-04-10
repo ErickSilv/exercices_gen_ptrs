@@ -118,15 +118,15 @@ void * Unique ( const void * first_ , const void * last_ , Igualdade igul , size
 	auto first = (byte *) first_;
 	auto last  = (byte *) last_;
 
-	auto iSlow = first+size;
-	auto iFast = first+size;
+	auto iSlow = first;
+	auto iFast = first;
 
-	for ( /*Empty*/; first != last; first += size) {
+	for ( /*Empty*/; iFast != last; iFast += size) {
 
 		auto compar = false;
-		auto aux = (byte *) first_; 
-		for ( /*Empty*/; aux != iSlow; aux += size ) {
-			compar = igul ( aux, iFast );
+		first = (byte *)first_;
+		for ( /*Empty*/; first != iSlow; first += size ) {
+			compar = igul ( first, iFast );
 
 			if ( compar ) {
 
@@ -147,12 +147,10 @@ void * Unique ( const void * first_ , const void * last_ , Igualdade igul , size
 
 		}
 
-		iFast += size;
-
 	}
 
-	//Returning (iSlow-size) because the pointer 'iSlow' is a reference to value what is memory garbage  
-	return iSlow-size;
+	//Returning 'iSlow' because him is a pointer to a immediate address after the last valid element of the array.  
+	return iSlow;
 
 }
 
@@ -161,7 +159,7 @@ int main () {
 
 	int A[13] = { -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -11, -1, -9};
 	//int B[10] = { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5 };
-	auto ptr_ = (int *) Remove_If( std::begin(A), std::end(A), positivo, sizeof(int) );
+	auto ptr_ = (int *) Unique( std::begin(A), std::end(A), igual, sizeof(int) );
 
 	std::cout << " A ";
 	print( std::begin(A), ptr_ );
