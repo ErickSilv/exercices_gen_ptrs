@@ -17,7 +17,7 @@ void print ( int *first, int *last ) {
 bool positivo ( const void *a ) {
 	
 	auto num1 = ( int * ) a;
-	if ( *num1 <= 0 ) {
+	if ( *num1 >= 0 ) {
 		return true;
 	}
 	return false;
@@ -99,23 +99,17 @@ void * Remove_If ( const void * first_ , const void * last_ , Condition con , si
 	auto first = (byte *) first_;
 	auto last  = (byte *) last_;
 
-	for ( /*Empty*/; first != last; first += size ) {
+	auto iSlow = first;
+	auto iFast = first;
 
-		if ( first == (last-size) && con(first) ) {
-			last -= size;
-		} else {
-			while ( con(first) ) { 
-				auto aux = first;
-				for ( /*Empty*/ ; aux != ( last-size ); aux += size ) {
-					std::memmove( aux , ( aux+size ), size );
-				}
-				last -= size;
-								
-			}
+	for ( /*Empty*/; iFast != last; iFast += size ) { 
+		if ( con(iFast) ) {
+			std::memmove( iSlow, iFast, size );
+			iSlow += size;
 		}
 	}
 	
-	return last;
+	return iSlow;
 }
 
 using Igualdade = bool (*)( const void *, const void * );
@@ -165,7 +159,7 @@ void * Unique ( const void * first_ , const void * last_ , Igualdade igul , size
 
 int main () {
 
-	int A[11] = { -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -11 };
+	int A[13] = { -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -11, -1, -9};
 	//int B[10] = { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5 };
 	auto ptr_ = (int *) Remove_If( std::begin(A), std::end(A), positivo, sizeof(int) );
 
